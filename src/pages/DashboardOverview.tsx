@@ -157,6 +157,21 @@ export default function DashboardOverview() {
 
   return (
     <div className="space-y-6">
+      {/* Workflow Navigation */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <a
+          href="#/intents/bestellung-aufgeben"
+          className="flex items-center gap-4 bg-card border border-border border-l-4 border-l-primary rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow"
+        >
+          <IconShoppingCart size={22} className="text-primary shrink-0" stroke={1.5} />
+          <div className="min-w-0 flex-1">
+            <p className="font-semibold text-sm text-foreground">Bestellung aufgeben</p>
+            <p className="text-xs text-muted-foreground mt-0.5 truncate">Runde wählen, Gericht aussuchen & Bestellung platzieren</p>
+          </div>
+          <IconChevronRight size={16} className="text-muted-foreground shrink-0" />
+        </a>
+      </div>
+
       {/* KPI Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         <StatCard

@@ -1,10 +1,10 @@
+import { lazy, Suspense } from 'react';
 import { HashRouter, Routes, Route } from 'react-router-dom';
 import { ActionsProvider } from '@/context/ActionsContext';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { ErrorBusProvider } from '@/components/ErrorBus';
 import { Layout } from '@/components/Layout';
 import DashboardOverview from '@/pages/DashboardOverview';
-import { WorkflowPlaceholders } from '@/components/WorkflowPlaceholders';
 import AdminPage from '@/pages/AdminPage';
 import SpeisekartePage from '@/pages/SpeisekartePage';
 import BestellrundePage from '@/pages/BestellrundePage';
@@ -15,6 +15,7 @@ import PublicFormBestellposition from '@/pages/public/PublicForm_Bestellposition
 // <public:imports>
 // </public:imports>
 // <custom:imports>
+const BestellungAufgebenPage = lazy(() => import('@/pages/intents/BestellungAufgebenPage'));
 // </custom:imports>
 
 export default function App() {
@@ -30,12 +31,13 @@ export default function App() {
               {/* <public:routes> */}
               {/* </public:routes> */}
               <Route element={<Layout />}>
-                <Route index element={<><div className="mb-8"><WorkflowPlaceholders /></div><DashboardOverview /></>} />
+                <Route index element={<DashboardOverview />} />
                 <Route path="speisekarte" element={<SpeisekartePage />} />
                 <Route path="bestellrunde" element={<BestellrundePage />} />
                 <Route path="bestellposition" element={<BestellpositionPage />} />
                 <Route path="admin" element={<AdminPage />} />
                 {/* <custom:routes> */}
+                <Route path="intents/bestellung-aufgeben" element={<Suspense fallback={null}><BestellungAufgebenPage /></Suspense>} />
                 {/* </custom:routes> */}
               </Route>
             </Routes>
