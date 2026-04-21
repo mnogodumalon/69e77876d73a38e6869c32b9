@@ -1,0 +1,53 @@
+{
+  "version": 1,
+  "forms": [
+    {
+      "entity": "speisekarte",
+      "app_id": "69e7785a5f873fbe904233a4",
+      "path": "/rest/apps/69e7785a5f873fbe904233a4/records",
+      "allowed_fields": [
+        "gericht_name",
+        "gericht_beschreibung",
+        "gericht_preis",
+        "gericht_kategorie"
+      ],
+      "pow": true,
+      "pow_difficulty": 50000,
+      "title": "Speisekarte — Formular"
+    },
+    {
+      "entity": "bestellrunde",
+      "app_id": "69e778603a19b181a0ef8872",
+      "path": "/rest/apps/69e778603a19b181a0ef8872/records",
+      "allowed_fields": [
+        "runde_titel",
+        "restaurant_name",
+        "bestellfrist",
+        "lieferzeit",
+        "mindestbestellwert",
+        "lieferkosten",
+        "runde_hinweis",
+        "organisator_vorname",
+        "organisator_nachname",
+        "organisator_email"
+      ],
+      "pow": true,
+      "pow_difficulty": 50000,
+      "title": "Bestellrunde — Formular"
+    },
+    {
+      "entity": "bestellposition",
+      "app_id": "69e778613af3af4f8fbc0827",
+      "path": "/rest/apps/69e778613af3af4f8fbc0827/records",
+      "allowed_fields": [
+        "teilnehmer_vorname",
+        "teilnehmer_nachname",
+        "menge",
+        "sonderwunsch"
+      ],
+      "pow": true,
+      "pow_difficulty": 50000,
+      "title": "Bestellposition — Formular"
+    }
+  ]
+}
