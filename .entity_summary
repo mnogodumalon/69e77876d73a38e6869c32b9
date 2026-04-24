@@ -1,5 +1,0 @@
-- Speisekarte (speisekarte): gericht_name[string/text], gericht_beschreibung[string/textarea], gericht_preis[number], gericht_kategorie[lookup/select]
-- Bestellrunde (bestellrunde): runde_titel[string/text], restaurant_name[string/text], bestellfrist[date/datetimeminute], lieferzeit[date/datetimeminute], mindestbestellwert[number], lieferkosten[number], runde_hinweis[string/textarea], organisator_vorname[string/text], organisator_nachname[string/text], organisator_email[string/email]
-- Bestellposition (bestellposition): teilnehmer_vorname[string/text], teilnehmer_nachname[string/text], ausgewaehlte_runde[applookup/select], ausgewaehltes_gericht[applookup/select], menge[number], sonderwunsch[string/textarea]
-  → ausgewaehlte_runde links to app_id 69e778603a19b181a0ef8872
-  → ausgewaehltes_gericht links to app_id 69e7785a5f873fbe904233a4
