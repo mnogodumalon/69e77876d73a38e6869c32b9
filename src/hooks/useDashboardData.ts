@@ -1,25 +1,25 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
-import type { Speisekarte, Bestellrunde, Bestellposition } from '@/types/app';
+import type { Speisekarte, Bestellposition, Bestellrunde } from '@/types/app';
 import { LivingAppsService } from '@/services/livingAppsService';
 
 export function useDashboardData() {
   const [speisekarte, setSpeisekarte] = useState<Speisekarte[]>([]);
-  const [bestellrunde, setBestellrunde] = useState<Bestellrunde[]>([]);
   const [bestellposition, setBestellposition] = useState<Bestellposition[]>([]);
+  const [bestellrunde, setBestellrunde] = useState<Bestellrunde[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
   const fetchAll = useCallback(async () => {
     setError(null);
     try {
-      const [speisekarteData, bestellrundeData, bestellpositionData] = await Promise.all([
+      const [speisekarteData, bestellpositionData, bestellrundeData] = await Promise.all([
         LivingAppsService.getSpeisekarte(),
-        LivingAppsService.getBestellrunde(),
         LivingAppsService.getBestellposition(),
+        LivingAppsService.getBestellrunde(),
       ]);
       setSpeisekarte(speisekarteData);
-      setBestellrunde(bestellrundeData);
       setBestellposition(bestellpositionData);
+      setBestellrunde(bestellrundeData);
     } catch (err) {
       setError(err instanceof Error ? err : new Error('Fehler beim Laden der Daten'));
     } finally {
@@ -33,14 +33,14 @@ export function useDashboardData() {
   useEffect(() => {
     async function silentRefresh() {
       try {
-        const [speisekarteData, bestellrundeData, bestellpositionData] = await Promise.all([
+        const [speisekarteData, bestellpositionData, bestellrundeData] = await Promise.all([
           LivingAppsService.getSpeisekarte(),
-          LivingAppsService.getBestellrunde(),
           LivingAppsService.getBestellposition(),
+          LivingAppsService.getBestellrunde(),
         ]);
         setSpeisekarte(speisekarteData);
-        setBestellrunde(bestellrundeData);
         setBestellposition(bestellpositionData);
+        setBestellrunde(bestellrundeData);
       } catch {
         // silently ignore — stale data is better than no data
       }
@@ -62,5 +62,5 @@ export function useDashboardData() {
     return m;
   }, [bestellrunde]);
 
-  return { speisekarte, setSpeisekarte, bestellrunde, setBestellrunde, bestellposition, setBestellposition, loading, error, fetchAll, speisekarteMap, bestellrundeMap };
+  return { speisekarte, setSpeisekarte, bestellposition, setBestellposition, bestellrunde, setBestellrunde, loading, error, fetchAll, speisekarteMap, bestellrundeMap };
 }

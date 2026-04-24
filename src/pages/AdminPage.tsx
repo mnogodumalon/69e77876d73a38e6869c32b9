@@ -1,13 +1,13 @@
 import { useState, useMemo, useCallback } from 'react';
 import { useDashboardData } from '@/hooks/useDashboardData';
-import type { Speisekarte, Bestellrunde, Bestellposition } from '@/types/app';
+import type { Speisekarte, Bestellposition, Bestellrunde } from '@/types/app';
 import { LivingAppsService, extractRecordId, cleanFieldsForApi } from '@/services/livingAppsService';
 import { SpeisekarteDialog } from '@/components/dialogs/SpeisekarteDialog';
 import { SpeisekarteViewDialog } from '@/components/dialogs/SpeisekarteViewDialog';
-import { BestellrundeDialog } from '@/components/dialogs/BestellrundeDialog';
-import { BestellrundeViewDialog } from '@/components/dialogs/BestellrundeViewDialog';
 import { BestellpositionDialog } from '@/components/dialogs/BestellpositionDialog';
 import { BestellpositionViewDialog } from '@/components/dialogs/BestellpositionViewDialog';
+import { BestellrundeDialog } from '@/components/dialogs/BestellrundeDialog';
+import { BestellrundeViewDialog } from '@/components/dialogs/BestellrundeViewDialog';
 import { BulkEditDialog } from '@/components/dialogs/BulkEditDialog';
 import { ConfirmDialog } from '@/components/ConfirmDialog';
 import { PageShell } from '@/components/PageShell';
@@ -40,6 +40,14 @@ const SPEISEKARTE_FIELDS = [
   { key: 'gericht_preis', label: 'Preis (€)', type: 'number' },
   { key: 'gericht_kategorie', label: 'Kategorie', type: 'lookup/select', options: [{ key: 'vorspeise', label: 'Vorspeise' }, { key: 'hauptgericht', label: 'Hauptgericht' }, { key: 'dessert', label: 'Dessert' }, { key: 'getraenk', label: 'Getränk' }, { key: 'beilage', label: 'Beilage' }, { key: 'sonstiges', label: 'Sonstiges' }] },
 ];
+const BESTELLPOSITION_FIELDS = [
+  { key: 'teilnehmer_vorname', label: 'Vorname', type: 'string/text' },
+  { key: 'teilnehmer_nachname', label: 'Nachname', type: 'string/text' },
+  { key: 'ausgewaehlte_runde', label: 'Bestellrunde', type: 'applookup/select', targetEntity: 'bestellrunde', targetAppId: 'BESTELLRUNDE', displayField: 'runde_titel' },
+  { key: 'ausgewaehltes_gericht', label: 'Gericht', type: 'applookup/select', targetEntity: 'speisekarte', targetAppId: 'SPEISEKARTE', displayField: 'gericht_name' },
+  { key: 'menge', label: 'Anzahl', type: 'number' },
+  { key: 'sonderwunsch', label: 'Sonderwünsche / Anmerkungen', type: 'string/textarea' },
+];
 const BESTELLRUNDE_FIELDS = [
   { key: 'runde_titel', label: 'Titel der Bestellrunde', type: 'string/text' },
   { key: 'restaurant_name', label: 'Restaurant', type: 'string/text' },
@@ -52,19 +60,11 @@ const BESTELLRUNDE_FIELDS = [
   { key: 'organisator_nachname', label: 'Nachname des Organisators', type: 'string/text' },
   { key: 'organisator_email', label: 'E-Mail des Organisators', type: 'string/email' },
 ];
-const BESTELLPOSITION_FIELDS = [
-  { key: 'teilnehmer_vorname', label: 'Vorname', type: 'string/text' },
-  { key: 'teilnehmer_nachname', label: 'Nachname', type: 'string/text' },
-  { key: 'ausgewaehlte_runde', label: 'Bestellrunde', type: 'applookup/select', targetEntity: 'bestellrunde', targetAppId: 'BESTELLRUNDE', displayField: 'runde_titel' },
-  { key: 'ausgewaehltes_gericht', label: 'Gericht', type: 'applookup/select', targetEntity: 'speisekarte', targetAppId: 'SPEISEKARTE', displayField: 'gericht_name' },
-  { key: 'menge', label: 'Anzahl', type: 'number' },
-  { key: 'sonderwunsch', label: 'Sonderwünsche / Anmerkungen', type: 'string/textarea' },
-];
 
 const ENTITY_TABS = [
   { key: 'speisekarte', label: 'Speisekarte', pascal: 'Speisekarte' },
-  { key: 'bestellrunde', label: 'Bestellrunde', pascal: 'Bestellrunde' },
   { key: 'bestellposition', label: 'Bestellposition', pascal: 'Bestellposition' },
+  { key: 'bestellrunde', label: 'Bestellrunde', pascal: 'Bestellrunde' },
 ] as const;
 
 type EntityKey = typeof ENTITY_TABS[number]['key'];
@@ -76,13 +76,13 @@ export default function AdminPage() {
   const [activeTab, setActiveTab] = useState<EntityKey>('speisekarte');
   const [selectedIds, setSelectedIds] = useState<Record<EntityKey, Set<string>>>(() => ({
     'speisekarte': new Set(),
-    'bestellrunde': new Set(),
     'bestellposition': new Set(),
+    'bestellrunde': new Set(),
   }));
   const [filters, setFilters] = useState<Record<EntityKey, Record<string, string>>>(() => ({
     'speisekarte': {},
-    'bestellrunde': {},
     'bestellposition': {},
+    'bestellrunde': {},
   }));
   const [showFilters, setShowFilters] = useState(false);
   const [dialogState, setDialogState] = useState<{ entity: EntityKey; record: any } | null>(null);
@@ -98,8 +98,8 @@ export default function AdminPage() {
   const getRecords = useCallback((entity: EntityKey) => {
     switch (entity) {
       case 'speisekarte': return (data as any).speisekarte as Speisekarte[] ?? [];
-      case 'bestellrunde': return (data as any).bestellrunde as Bestellrunde[] ?? [];
       case 'bestellposition': return (data as any).bestellposition as Bestellposition[] ?? [];
+      case 'bestellrunde': return (data as any).bestellrunde as Bestellrunde[] ?? [];
       default: return [];
     }
   }, [data]);
@@ -135,8 +135,8 @@ export default function AdminPage() {
   const getFieldMeta = useCallback((entity: EntityKey) => {
     switch (entity) {
       case 'speisekarte': return SPEISEKARTE_FIELDS;
-      case 'bestellrunde': return BESTELLRUNDE_FIELDS;
       case 'bestellposition': return BESTELLPOSITION_FIELDS;
+      case 'bestellrunde': return BESTELLRUNDE_FIELDS;
       default: return [];
     }
   }, []);
@@ -236,15 +236,15 @@ export default function AdminPage() {
         update: (id: string, fields: any) => LivingAppsService.updateSpeisekarteEntry(id, fields),
         remove: (id: string) => LivingAppsService.deleteSpeisekarteEntry(id),
       };
-      case 'bestellrunde': return {
-        create: (fields: any) => LivingAppsService.createBestellrundeEntry(fields),
-        update: (id: string, fields: any) => LivingAppsService.updateBestellrundeEntry(id, fields),
-        remove: (id: string) => LivingAppsService.deleteBestellrundeEntry(id),
-      };
       case 'bestellposition': return {
         create: (fields: any) => LivingAppsService.createBestellpositionEntry(fields),
         update: (id: string, fields: any) => LivingAppsService.updateBestellpositionEntry(id, fields),
         remove: (id: string) => LivingAppsService.deleteBestellpositionEntry(id),
+      };
+      case 'bestellrunde': return {
+        create: (fields: any) => LivingAppsService.createBestellrundeEntry(fields),
+        update: (id: string, fields: any) => LivingAppsService.updateBestellrundeEntry(id, fields),
+        remove: (id: string) => LivingAppsService.deleteBestellrundeEntry(id),
       };
       default: return null;
     }
@@ -583,16 +583,6 @@ export default function AdminPage() {
           enablePhotoLocation={AI_PHOTO_LOCATION['Speisekarte']}
         />
       )}
-      {(createEntity === 'bestellrunde' || dialogState?.entity === 'bestellrunde') && (
-        <BestellrundeDialog
-          open={createEntity === 'bestellrunde' || dialogState?.entity === 'bestellrunde'}
-          onClose={() => { setCreateEntity(null); setDialogState(null); }}
-          onSubmit={dialogState?.entity === 'bestellrunde' ? handleUpdate : (fields: any) => handleCreate('bestellrunde', fields)}
-          defaultValues={dialogState?.entity === 'bestellrunde' ? dialogState.record?.fields : undefined}
-          enablePhotoScan={AI_PHOTO_SCAN['Bestellrunde']}
-          enablePhotoLocation={AI_PHOTO_LOCATION['Bestellrunde']}
-        />
-      )}
       {(createEntity === 'bestellposition' || dialogState?.entity === 'bestellposition') && (
         <BestellpositionDialog
           open={createEntity === 'bestellposition' || dialogState?.entity === 'bestellposition'}
@@ -605,20 +595,22 @@ export default function AdminPage() {
           enablePhotoLocation={AI_PHOTO_LOCATION['Bestellposition']}
         />
       )}
+      {(createEntity === 'bestellrunde' || dialogState?.entity === 'bestellrunde') && (
+        <BestellrundeDialog
+          open={createEntity === 'bestellrunde' || dialogState?.entity === 'bestellrunde'}
+          onClose={() => { setCreateEntity(null); setDialogState(null); }}
+          onSubmit={dialogState?.entity === 'bestellrunde' ? handleUpdate : (fields: any) => handleCreate('bestellrunde', fields)}
+          defaultValues={dialogState?.entity === 'bestellrunde' ? dialogState.record?.fields : undefined}
+          enablePhotoScan={AI_PHOTO_SCAN['Bestellrunde']}
+          enablePhotoLocation={AI_PHOTO_LOCATION['Bestellrunde']}
+        />
+      )}
       {viewState?.entity === 'speisekarte' && (
         <SpeisekarteViewDialog
           open={viewState?.entity === 'speisekarte'}
           onClose={() => setViewState(null)}
           record={viewState?.record}
           onEdit={(r: any) => { setViewState(null); setDialogState({ entity: 'speisekarte', record: r }); }}
-        />
-      )}
-      {viewState?.entity === 'bestellrunde' && (
-        <BestellrundeViewDialog
-          open={viewState?.entity === 'bestellrunde'}
-          onClose={() => setViewState(null)}
-          record={viewState?.record}
-          onEdit={(r: any) => { setViewState(null); setDialogState({ entity: 'bestellrunde', record: r }); }}
         />
       )}
       {viewState?.entity === 'bestellposition' && (
@@ -629,6 +621,14 @@ export default function AdminPage() {
           onEdit={(r: any) => { setViewState(null); setDialogState({ entity: 'bestellposition', record: r }); }}
           bestellrundeList={(data as any).bestellrunde ?? []}
           speisekarteList={(data as any).speisekarte ?? []}
+        />
+      )}
+      {viewState?.entity === 'bestellrunde' && (
+        <BestellrundeViewDialog
+          open={viewState?.entity === 'bestellrunde'}
+          onClose={() => setViewState(null)}
+          record={viewState?.record}
+          onEdit={(r: any) => { setViewState(null); setDialogState({ entity: 'bestellrunde', record: r }); }}
         />
       )}
 
