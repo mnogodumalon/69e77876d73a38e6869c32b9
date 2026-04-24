@@ -5,7 +5,7 @@ import type { Bestellrunde, Speisekarte } from '@/types/app';
 import { APP_IDS } from '@/types/app';
 import { LivingAppsService, createRecordUrl, extractRecordId } from '@/services/livingAppsService';
 import { formatDate, formatCurrency } from '@/lib/formatters';
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -55,16 +55,6 @@ export default function DashboardOverview() {
   // Tab state
   const [activeTab, setActiveTab] = useState<'bestellungen' | 'speisekarte'>('bestellungen');
 
-  // Echter Fehler für Sentry + Repair-Endpoint-Test
-  const [runtimeError, setRuntimeError] = useState<Error | null>(null);
-  useEffect(() => {
-    fetch('/api/v2/bestellrunden/aktiv/zusammenfassung')
-      .then(r => {
-        if (!r.ok) throw new Error(`HTTP ${r.status}: Endpunkt /api/v2/bestellrunden/aktiv/zusammenfassung nicht gefunden`);
-        return r.json();
-      })
-      .catch((err: Error) => setRuntimeError(err));
-  }, []);
 
   const selectedRunde = useMemo(
     () => bestellrunde.find(r => r.record_id === selectedRundeId) ?? bestellrunde[0] ?? null,
@@ -99,7 +89,7 @@ export default function DashboardOverview() {
   }, [speisekarte]);
 
   if (loading) return <DashboardSkeleton />;
-  if (error || runtimeError) return <DashboardError error={error ?? runtimeError!} onRetry={fetchAll} />;
+  if (error) return <DashboardError error={error} onRetry={fetchAll} />;
 
   const activeRunde = selectedRunde;
 
