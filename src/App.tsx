@@ -1,3 +1,4 @@
+import '@/lib/sentry';
 import { lazy, Suspense } from 'react';
 import { HashRouter, Routes, Route } from 'react-router-dom';
 import { ActionsProvider } from '@/context/ActionsContext';
@@ -7,11 +8,11 @@ import { Layout } from '@/components/Layout';
 import DashboardOverview from '@/pages/DashboardOverview';
 import AdminPage from '@/pages/AdminPage';
 import SpeisekartePage from '@/pages/SpeisekartePage';
-import BestellrundePage from '@/pages/BestellrundePage';
 import BestellpositionPage from '@/pages/BestellpositionPage';
+import BestellrundePage from '@/pages/BestellrundePage';
 import PublicFormSpeisekarte from '@/pages/public/PublicForm_Speisekarte';
-import PublicFormBestellrunde from '@/pages/public/PublicForm_Bestellrunde';
 import PublicFormBestellposition from '@/pages/public/PublicForm_Bestellposition';
+import PublicFormBestellrunde from '@/pages/public/PublicForm_Bestellrunde';
 // <public:imports>
 // </public:imports>
 // <custom:imports>
@@ -26,15 +27,15 @@ export default function App() {
           <ActionsProvider>
             <Routes>
               <Route path="public/69e7785a5f873fbe904233a4" element={<PublicFormSpeisekarte />} />
-              <Route path="public/69e778603a19b181a0ef8872" element={<PublicFormBestellrunde />} />
               <Route path="public/69e778613af3af4f8fbc0827" element={<PublicFormBestellposition />} />
+              <Route path="public/69e778603a19b181a0ef8872" element={<PublicFormBestellrunde />} />
               {/* <public:routes> */}
               {/* </public:routes> */}
               <Route element={<Layout />}>
                 <Route index element={<DashboardOverview />} />
                 <Route path="speisekarte" element={<SpeisekartePage />} />
-                <Route path="bestellrunde" element={<BestellrundePage />} />
                 <Route path="bestellposition" element={<BestellpositionPage />} />
+                <Route path="bestellrunde" element={<BestellrundePage />} />
                 <Route path="admin" element={<AdminPage />} />
                 {/* <custom:routes> */}
                 <Route path="intents/bestellung-aufgeben" element={<Suspense fallback={null}><BestellungAufgebenPage /></Suspense>} />

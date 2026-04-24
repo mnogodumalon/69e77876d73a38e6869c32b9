@@ -16,6 +16,20 @@
       "title": "Speisekarte — Formular"
     },
     {
+      "entity": "bestellposition",
+      "app_id": "69e778613af3af4f8fbc0827",
+      "path": "/rest/apps/69e778613af3af4f8fbc0827/records",
+      "allowed_fields": [
+        "teilnehmer_vorname",
+        "teilnehmer_nachname",
+        "menge",
+        "sonderwunsch"
+      ],
+      "pow": true,
+      "pow_difficulty": 50000,
+      "title": "Bestellposition — Formular"
+    },
+    {
       "entity": "bestellrunde",
       "app_id": "69e778603a19b181a0ef8872",
       "path": "/rest/apps/69e778603a19b181a0ef8872/records",
@@ -34,20 +48,6 @@
       "pow": true,
       "pow_difficulty": 50000,
       "title": "Bestellrunde — Formular"
-    },
-    {
-      "entity": "bestellposition",
-      "app_id": "69e778613af3af4f8fbc0827",
-      "path": "/rest/apps/69e778613af3af4f8fbc0827/records",
-      "allowed_fields": [
-        "teilnehmer_vorname",
-        "teilnehmer_nachname",
-        "menge",
-        "sonderwunsch"
-      ],
-      "pow": true,
-      "pow_difficulty": 50000,
-      "title": "Bestellposition — Formular"
     }
   ]
 }

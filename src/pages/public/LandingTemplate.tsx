@@ -14,8 +14,8 @@
  *      or work around it.
  *   3. The POST URL pattern is fixed by the form-proxy contract:
  *      ${PROXY_BASE}/api/rest/apps/${APP_ID}/records
- *   4. Add imports via the public:imports marker in App.tsx and
- *      routes via the public:routes marker. Never touch custom:* markers.
+ *   4. Add imports via the {/ * <public:imports> * /} marker in App.tsx and
+ *      routes via {/ * <public:routes> * /}. Never touch <custom:*> markers.
  *   5. Route path convention: `public/p/<slug>` (lowercase, hyphenated).
  */
 
@@ -23,19 +23,6 @@ import { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-
-declare global {
-  namespace JSX {
-    interface IntrinsicElements {
-      'altcha-widget': React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement> & {
-        challengeurl?: string;
-        auto?: string;
-        hidelogo?: boolean;
-        hidefooter?: boolean;
-      }, HTMLElement>;
-    }
-  }
-}
 
 // ─── WIRING — agent must keep these three constants in sync with the target form-config ───
 // Matches settings.PROXY_BASE_URL; empty string → relative URL against the deploy host.
