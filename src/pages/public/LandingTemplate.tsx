@@ -13,7 +13,7 @@
  *   2. Keep the ALTCHA widget — it's the spam gate. Do not remove, disable,
  *      or work around it.
  *   3. The POST URL pattern is fixed by the form-proxy contract:
- *      ${PROXY_BASE}/api/rest/apps/${APP_ID}/records
+ *      PROXY_BASE/api/rest/apps/APP_ID/records
  *   4. Add imports via the public:imports marker in App.tsx and
  *      routes via the public:routes marker. Never touch custom:* markers.
  *   5. Route path convention: `public/p/<slug>` (lowercase, hyphenated).
